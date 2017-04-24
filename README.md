@@ -29,5 +29,7 @@ monitor.on('incomingPlayerState', (playerState, serverWorldTime) => {
 monitor.on('endOfBatch', () => {
   console.log('end of batch')
 })
+
+monitor.start()
 ```
 

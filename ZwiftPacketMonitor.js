@@ -10,7 +10,12 @@ class ZwiftPacketMonitor extends EventEmitter {
     super()
     this._cap = new Cap()
     this._linkType = null
-    this._interfaceName = interfaceName
+    this._sequence = 0
+    if (interfaceName.match(/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/)) {
+      this._interfaceName = Cap.findDevice(interfaceName)
+    } else {
+      this._interfaceName = interfaceName
+    }
   }
 
   start () {
@@ -34,6 +39,13 @@ class ZwiftPacketMonitor extends EventEmitter {
           try {
             if (ret.info.srcport === 3022) {
               let packet = serverToClientPacket.decode(buffer.slice(ret.offset, ret.offset + ret.info.length))
+              if (this._sequence) {
+                if (packet.seqno > this._sequence + 1) {
+                  Console.log(`Missing packets - expecting ${this._sequence + 1}, got ${packet.seqno}`)
+                } else if (packet.seqno < this._squence) {
+                  Console.log(`Delayed packet - expecting ${this._sequence + 1}, got ${packet.seqno}`)
+                }
+              }
               for (let player_state of packet.player_states) {
                 this.emit('incomingPlayerState', player_state, packet.world_time)
               }
