@@ -47,15 +47,15 @@ class ZwiftPacketMonitor extends EventEmitter {
                 }
               }
               for (let player_state of packet.player_states) {
-                this.emit('incomingPlayerState', player_state, packet.world_time)
+                this.emit('incomingPlayerState', player_state, packet.world_time, ret.info.dstport)
               }
-              if (packet.num_msgs == packet.msgnum) {
+              if (packet.num_msgs === packet.msgnum) {
                 this.emit('endOfBatch')
               }
             } else if (ret.info.dstport === 3022) {
               let packet = clientToServerPacket.decode(buffer.slice(ret.offset, ret.offset + ret.info.length - 4))
               if (packet.state) {
-                this.emit('outgoingPlayerState', packet.state, packet.world_time)
+                this.emit('outgoingPlayerState', packet.state, packet.world_time, ret.info.srcport)
               }
             }
           } catch (ex) {
