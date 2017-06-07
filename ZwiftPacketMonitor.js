@@ -25,7 +25,7 @@ class ZwiftPacketMonitor extends EventEmitter {
   }
 
   static deviceList () {
-    return this._cap.deviceList()
+    return  Cap.deviceList()
   }
 
   processPacket () {
@@ -41,11 +41,13 @@ class ZwiftPacketMonitor extends EventEmitter {
               let packet = serverToClientPacket.decode(buffer.slice(ret.offset, ret.offset + ret.info.length))
               if (this._sequence) {
                 if (packet.seqno > this._sequence + 1) {
-                  Console.log(`Missing packets - expecting ${this._sequence + 1}, got ${packet.seqno}`)
+                  Console.warn(`Missing packets - expecting ${this._sequence + 1}, got ${packet.seqno}`)
                 } else if (packet.seqno < this._squence) {
-                  Console.log(`Delayed packet - expecting ${this._sequence + 1}, got ${packet.seqno}`)
+                  Console.warn(`Delayed packet - expecting ${this._sequence + 1}, got ${packet.seqno}`)
+                  return
                 }
               }
+              this._sequence = packet.seqno
               for (let player_state of packet.player_states) {
                 this.emit('incomingPlayerState', player_state, packet.world_time, ret.info.dstport)
               }
