@@ -24,6 +24,10 @@ class ZwiftPacketMonitor extends EventEmitter {
     this._cap.on('packet', this.processPacket.bind(this))
   }
 
+  stop () {
+    this._cap.close()
+  }
+
   static deviceList () {
     return  Cap.deviceList()
   }
@@ -49,7 +53,7 @@ class ZwiftPacketMonitor extends EventEmitter {
               }
               this._sequence = packet.seqno
               for (let player_state of packet.player_states) {
-                this.emit('incomingPlayerState', player_state, packet.world_time, ret.info.dstport)
+                this.emit('incomingPlayerState', player_state, packet.world_time, ret.info.dstport, ret.info.dstaddr)
               }
               if (packet.num_msgs === packet.msgnum) {
                 this.emit('endOfBatch')
@@ -57,7 +61,7 @@ class ZwiftPacketMonitor extends EventEmitter {
             } else if (ret.info.dstport === 3022) {
               let packet = clientToServerPacket.decode(buffer.slice(ret.offset, ret.offset + ret.info.length - 4))
               if (packet.state) {
-                this.emit('outgoingPlayerState', packet.state, packet.world_time, ret.info.srcport)
+                this.emit('outgoingPlayerState', packet.state, packet.world_time, ret.info.srcport, ret.info.srcaddr)
               }
             }
           } catch (ex) {

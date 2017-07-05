@@ -1,6 +1,6 @@
 {
   "name": "zwift-packet-monitor",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "monitor Zwift UDP packets and emit events for player state updates",
   "main": "ZwiftPacketMonitor.js",
   "scripts": {
