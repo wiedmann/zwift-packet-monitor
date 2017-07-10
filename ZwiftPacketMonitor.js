@@ -43,15 +43,17 @@ class ZwiftPacketMonitor extends EventEmitter {
           try {
             if (ret.info.srcport === 3022) {
               let packet = serverToClientPacket.decode(buffer.slice(ret.offset, ret.offset + ret.info.length))
+              /*
               if (this._sequence) {
                 if (packet.seqno > this._sequence + 1) {
-                  Console.warn(`Missing packets - expecting ${this._sequence + 1}, got ${packet.seqno}`)
+                  console.warn(`Missing packets - expecting ${this._sequence + 1}, got ${packet.seqno}`)
                 } else if (packet.seqno < this._squence) {
-                  Console.warn(`Delayed packet - expecting ${this._sequence + 1}, got ${packet.seqno}`)
+                  console.warn(`Delayed packet - expecting ${this._sequence + 1}, got ${packet.seqno}`)
                   return
                 }
               }
               this._sequence = packet.seqno
+              */
               for (let player_state of packet.player_states) {
                 this.emit('incomingPlayerState', player_state, packet.world_time, ret.info.dstport, ret.info.dstaddr)
               }
