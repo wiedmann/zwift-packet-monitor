@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/wiedmann/zwift-packet-monitor#readme",
   "dependencies": {
-    "cap": "^0.1.2",
-    "zwift-mobile-api": "^0.2.5"
+    "cap": "^0.2.1",
+    "zwift-mobile-api": "^0.3.16"
   }
 }
